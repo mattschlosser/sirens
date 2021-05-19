@@ -41,7 +41,13 @@ export default {
         this.error = true
       } else {
         this.success = true
-        let subscription = await navigator.serviceWorker.register('service.js').then(res => res.pushManager.getSubscription());
+        let subscription = await navigator.serviceWorker.register('service.js').then(async res => {
+          let subscription = await res.pushManager.getSubscription();
+          if (!subscription) {
+            subscription = await res.pushManager.subscribe({userVisibleOnly: true})
+          }
+          return subscription;
+        });
         this.saveSubscription(subscription);
       }
     },
