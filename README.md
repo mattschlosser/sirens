@@ -1,5 +1,13 @@
 # sirens
 
+Sirens let's you know the reason you are hearing sirens, if you happen to be in the City of Edmonton. 
+
+1. Hear Sirens
+2. Go app and click the button
+3. Wait some time... (a few days)
+4. Get a notification when the reason for the sirens becomes available
+
+
 ## Project setup
 ```
 yarn install
