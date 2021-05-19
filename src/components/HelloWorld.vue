@@ -41,7 +41,7 @@ export default {
         this.error = true
       } else {
         this.success = true
-        let subscription = await this.$sw.pushManager.getSubscription();
+        let subscription = await navigator.serviceWorker.register('service.js').then(res => res.pushManager.getSubscription());
         this.saveSubscription(subscription);
       }
     },
