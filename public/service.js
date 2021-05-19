@@ -1,5 +1,5 @@
 const VAPID_PUBLIC =  'BI10h0BBUuysQHi1I4lHGEufncl-Gt8449hsV-gO_H2tVZPGw3CE5WejoyjlIfKF89SUCGc_BG5PwHqdaPJyZZo'
-const SERVER_URL = 'http://localhost:4000/save-subscription'
+const SERVER_URL = 'https://sirens.mattschlosser.me/save-subscription'
 
 const urlB64ToUint8Array = base64String => {
     const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
