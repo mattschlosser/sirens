@@ -26,7 +26,7 @@ export default {
   }, 
   methods: {
     async saveSubscription(subscription) {
-      fetch('http://localhost:4000/save-subscription', {
+      fetch('https://sirens.mattschlosser.me/save-subscription', {
         method: 'POST', 
         body: JSON.stringify(subscription), 
         headers: {
