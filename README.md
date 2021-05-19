@@ -1,4 +1,4 @@
-# sirens
+# sirens 🚒
 
 Sirens let's you know the reason you are hearing sirens, if you happen to be in the City of Edmonton. 
 
