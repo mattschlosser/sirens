@@ -7,7 +7,7 @@ Sirens let's you know the reason you are hearing sirens, if you happen to be in 
 3. Wait some time... (a few days)
 4. Get a notification when the reason for the sirens becomes available
 
-Serer code is at https://github.com/mattschlosser/sirens-be
+Server code is at https://github.com/mattschlosser/sirens-be
 
 ## Project setup
 ```
