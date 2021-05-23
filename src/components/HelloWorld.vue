@@ -9,6 +9,18 @@
     <button class="btn btn-primary btn-block" @click="notify">
       I hear sirens
     </button>
+    <div class="container">
+      <h4>Recent Requests</h4>
+      <table class="table table-responsive">
+        <thead>
+            <tr><th>Timestamp</th><th>Reason</th><th>Notified</th></tr>
+        </thead>
+        
+          <tr  v-for="(item, i) in recent" :key='i'>
+            <td>{{Intl.DateTimeFormat(window.navigator.language || 'en-CA', { dateStyle: 'full', timeStyle: 'medium' }).format(new Date(item.timestamp + 'Z'))}}</td><td>---</td><td>{{item.nofified ? `Yes` : `No`}}</td>
+          </tr>
+      </table>
+      </div>
   </div>
 </template>
 
@@ -20,13 +32,21 @@ export default {
   }, 
   data() {
     return {
+      window,
       error: false,
-      success: false
+      success: false, 
+      res: null, 
+      subscription: null, 
+      recent: []
     }
   }, 
+  created() {
+    this.load();
+  }, 
   methods: {
+
     async saveSubscription(subscription) {
-      fetch('https://sirens.mattschlosser.me/save-subscription', {
+      fetch(`${process.env.VUE_APP_BACKEND || `http://localhost:4000`}/save-subscription`, {
         method: 'POST', 
         body: JSON.stringify(subscription), 
         headers: {
@@ -34,20 +54,32 @@ export default {
         }
       })
     }, 
+    getRecentSirens() {
+      return fetch(`${process.env.VUE_APP_BACKEND || `http://localhost:4000`}/recent`, {
+        method: 'POST', 
+        body: JSON.stringify(this.subscription), 
+        headers: {
+          'Content-type': "application/json"
+        }
+      }).then(r => r.json())
+    }, 
+    async load() {
+      this.res =  await navigator.serviceWorker.register('service.js');
+      this.subscription = await this.res.pushManager.getSubscription();
+      console.log(this.subscription);
+      this.recent = await this.getRecentSirens();
+    }, 
     async notify() {
       const permission = await window.Notification.requestPermission();
-
+      let {res, subscription} = this;
       if (permission !== 'granted') {
         this.error = true
       } else {
         this.success = true
-        let subscription = await navigator.serviceWorker.register('service.js').then(async res => {
-          let subscription = await res.pushManager.getSubscription();
-          if (!subscription) {
-            subscription = await res.pushManager.subscribe({userVisibleOnly: true})
-          }
-          return subscription;
-        });
+        if (!subscription) {
+          this.subscription = await res.pushManager.subscribe({userVisibleOnly: true})
+        }
+        // return subscription;
         this.saveSubscription(subscription);
       }
     },
