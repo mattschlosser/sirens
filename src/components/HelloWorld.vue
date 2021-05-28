@@ -20,7 +20,7 @@
               </p>
               <div class="card-text">
                 <template v-if="item.reason">
-                    `${item.reason.event_description} - ${item.reason.dispatch_date} ${item.reason.dispatch_time} - ${item.reason.equipment_assigned } - ${item.reason.approximate_location}, ${item.reason.neighbourhood_name}`
+                    {{`${item.reason.event_description} - ${item.reason.dispatch_date} ${item.reason.dispatch_time} - ${item.reason.equipment_assigned } - ${item.reason.approximate_location}, ${item.reason.neighbourhood_name}`}}
                 </template>
                 <template v-else>
                 </template>
