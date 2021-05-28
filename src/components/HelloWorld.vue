@@ -11,15 +11,28 @@
     </button>
     <div class="container">
       <h4>Recent Requests</h4>
-      <table class="table table-responsive">
-        <thead>
-            <tr><th>Timestamp</th><th>Reason</th><th>Notified</th></tr>
-        </thead>
-        
-          <tr  v-for="(item, i) in recent" :key='i'>
-            <td>{{Intl.DateTimeFormat(window.navigator.language || 'en-CA', { dateStyle: 'full', timeStyle: 'medium' }).format(new Date(item.timestamp + 'Z'))}}</td><td>{{item.reason || `---`}}</td><td>{{item.notified ? `Yes` : `No`}}</td>
-          </tr>
-      </table>
+      <div class="row gx-5 gy-2">
+        <div class="card  col-sm-12 col-md-6 col-lg-4 col-xl-3" v-for="(item, i) in recent" :key="i">
+          <!-- <div class="card"> -->
+            <div class="card-body d-flex flex-column justify-content-between">
+              <p class="card-title">
+                {{Intl.DateTimeFormat(window.navigator.language || 'en-CA', { dateStyle: 'full', timeStyle: 'medium' }).format(new Date(item.timestamp + 'Z'))}}
+              </p>
+              <div class="card-text">
+                <template v-if="item.reason">
+                    `${item.reason.event_description} - ${item.reason.dispatch_date} ${item.reason.dispatch_time} - ${item.reason.equipment_assigned } - ${item.reason.approximate_location}, ${item.reason.neighbourhood_name}`
+                </template>
+                <template v-else>
+                </template>
+                <!-- {{item.reason || '---'}} -->
+                <div class="btn d-block" :class="{'btn-danger': !item.notified, 'btn-success': item.notified}">
+                  {{item.notified ? 'Notified' : 'Pending'}}
+                </div>
+              </div>
+            <!-- </div> -->
+          </div>
+        </div>
+      </div>
       </div>
   </div>
 </template>
@@ -65,13 +78,15 @@ export default {
       })
     }, 
     getRecentSirens() {
-      return fetch(`${process.env.VUE_APP_BACKEND || `http://localhost:4000`}/recent`, {
-        method: 'POST', 
-        body: JSON.stringify(this.subscription), 
-        headers: {
-          'Content-type': "application/json"
-        }
-      }).then(r => r.json())
+      if (this.subscription !== null) {
+        return fetch(`${process.env.VUE_APP_BACKEND || `http://localhost:4000`}/recent`, {
+          method: 'POST', 
+          body: JSON.stringify(this.subscription), 
+          headers: {
+            'Content-type': "application/json"
+          }
+        }).then(r => r.json())
+      }
     }, 
     async load() {
       this.res =  await navigator.serviceWorker.register('service.js');
