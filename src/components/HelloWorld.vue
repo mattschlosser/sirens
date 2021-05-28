@@ -17,7 +17,7 @@
         </thead>
         
           <tr  v-for="(item, i) in recent" :key='i'>
-            <td>{{Intl.DateTimeFormat(window.navigator.language || 'en-CA', { dateStyle: 'full', timeStyle: 'medium' }).format(new Date(item.timestamp + 'Z'))}}</td><td>---</td><td>{{item.nofified ? `Yes` : `No`}}</td>
+            <td>{{Intl.DateTimeFormat(window.navigator.language || 'en-CA', { dateStyle: 'full', timeStyle: 'medium' }).format(new Date(item.timestamp + 'Z'))}}</td><td>{{item.reason || `---`}}</td><td>{{item.notified ? `Yes` : `No`}}</td>
           </tr>
       </table>
       </div>
