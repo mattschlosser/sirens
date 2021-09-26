@@ -102,7 +102,7 @@ export default {
       } else {
         this.success = true
         if (!subscription) {
-          const applicationServerKey = urlB64ToUint8Array(process.env.VUE_APP_VAPID_PUBLIC)
+          const applicationServerKey = urlB64ToUint8Array(process.env.VUE_APP_VAPID_KEY)
           this.subscription = await res.pushManager.subscribe({userVisibleOnly: true, applicationServerKey})
         }
         // return subscription;
