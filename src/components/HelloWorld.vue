@@ -96,17 +96,17 @@ export default {
     }, 
     async notify() {
       const permission = await window.Notification.requestPermission();
-      let {res, subscription} = this;
+      let {res} = this;
       if (permission !== 'granted') {
         this.error = true
       } else {
         this.success = true
-        if (!subscription) {
+        if (!this.subscription) {
           const applicationServerKey = urlB64ToUint8Array(process.env.VUE_APP_VAPID_KEY)
           this.subscription = await res.pushManager.subscribe({userVisibleOnly: true, applicationServerKey})
         }
         // return subscription;
-        this.saveSubscription(subscription);
+        this.saveSubscription(this.subscription);
       }
     },
   }
