@@ -102,7 +102,7 @@ export default {
       this.subscription = await this.res.pushManager.getSubscription();
       this.refreshRecentSirens();
     }, 
-    refreshRecentSirens() {
+    async refreshRecentSirens() {
       this.recent = await this.getRecentSirens();
     }, 
     async notify() {
