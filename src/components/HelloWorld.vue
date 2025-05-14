@@ -16,7 +16,7 @@
           <!-- <div class="card"> -->
             <div class="card-body d-flex flex-column justify-content-between">
               <p class="card-title">
-                {{Intl.DateTimeFormat(window.navigator.language || 'en-CA', { dateStyle: 'full', timeStyle: 'medium' }).format(new Date(item.timestamp + 'Z'))}}
+                {{ formatTimestamp(item) }}
               </p>
               <div class="card-text">
                 <template v-if="item.reason">
@@ -48,6 +48,9 @@ const urlB64ToUint8Array = base64String => {
     }
     return outputArray  
 }
+
+const formatter = Intl.DateTimeFormat(window.navigator.language || 'en-CA', { dateStyle: 'full', timeStyle: 'medium' });
+
 export default {
   name: 'HelloWorld',
   props: {
@@ -67,9 +70,11 @@ export default {
     this.load();
   }, 
   methods: {
-
+    formatTimestamp(item) {
+      return formatter.format(new Date(item.timestamp + 'Z'));
+    },
     async saveSubscription(subscription) {
-      fetch(`${process.env.VUE_APP_BACKEND || `http://localhost:4000`}/save-subscription`, {
+      await fetch(`${process.env.VUE_APP_BACKEND || `http://localhost:4000`}/save-subscription`, {
         method: 'POST', 
         body: JSON.stringify(subscription), 
         headers: {
@@ -77,21 +82,27 @@ export default {
         }
       })
     }, 
-    getRecentSirens() {
+    async getRecentSirens() {
       if (this.subscription !== null) {
-        return fetch(`${process.env.VUE_APP_BACKEND || `http://localhost:4000`}/recent`, {
+        const result = await fetch(`${process.env.VUE_APP_BACKEND || `http://localhost:4000`}/recent`, {
           method: 'POST', 
           body: JSON.stringify(this.subscription), 
           headers: {
             'Content-type': "application/json"
           }
-        }).then(r => r.json())
+        });
+        if (result.ok) {
+          return result.json();
+        }
       }
+      return [];
     }, 
     async load() {
       this.res =  await navigator.serviceWorker.register('service.js');
       this.subscription = await this.res.pushManager.getSubscription();
-      console.log(this.subscription);
+      this.refreshRecentSirens();
+    }, 
+    refreshRecentSirens() {
       this.recent = await this.getRecentSirens();
     }, 
     async notify() {
@@ -105,8 +116,8 @@ export default {
           const applicationServerKey = urlB64ToUint8Array(process.env.VUE_APP_VAPID_KEY)
           this.subscription = await res.pushManager.subscribe({userVisibleOnly: true, applicationServerKey})
         }
-        // return subscription;
-        this.saveSubscription(this.subscription);
+        await this.saveSubscription(this.subscription);
+        this.refreshRecentSirens();
       }
     },
   }
